@@ -41,3 +41,15 @@ app-example
 # generated native folders
 /ios
 /android
+
+# Drizzle
+db/migrations/meta/_journal.json.bak
+
+# WebStorm
+.idea/workspace.xml
+.idea/usage.statistics.xml
+.idea/shelf/
+.idea/dictionaries/
+.idea/httpRequests/
+.idea/dataSources/
+.idea/dataSources.local.xml

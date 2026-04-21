@@ -1,50 +1,22 @@
-# Welcome to your Expo app 👋
+# Nudge
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Une app mobile TDAH-first pour décomposer les tâches du quotidien.
 
-## Get started
+Local-first. Pas de compte. Pas de jugement.
 
-1. Install dependencies
+## Stack
 
-   ```bash
-   npm install
-   ```
+Expo SDK 54 · TypeScript strict · expo-router · NativeWind v4 · Drizzle ORM · expo-sqlite · Zustand
 
-2. Start the app
+## Commandes
 
-   ```bash
-   npx expo start
-   ```
+- `pnpm start` — lance le dev server
+- `pnpm ios` / `pnpm android` — lance sur simulateur
+- `pnpm typecheck` — vérifie les types
+- `pnpm doctor` — diagnostique Expo
+- `pnpm db:generate` — génère les migrations Drizzle
+- `pnpm db:studio` — ouvre Drizzle Studio
 
-In the output, you'll find options to open the app in a
+## Roadmap
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Voir le skill `nudge-project` (T01 → T12) pour le détail produit et les sous-tâches.
