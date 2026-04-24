@@ -114,8 +114,8 @@ type Step = {
 
 type Recurrence =
   | { kind: 'daily' }
-  | { kind: 'weekly'; weekdays: number[] }   // 0=dim, 6=sam
-  | { kind: 'monthly'; dayOfMonth: number };
+  | { kind: 'weekly'; weekdays: number[] }    // 0=dim, 6=sam — multi-select
+  | { kind: 'monthly'; daysOfMonth: number[] }; // 1..31 — multi-select
 
 // Chaque fois qu'une tâche récurrente apparaît, on crée une TaskInstance
 type TaskInstance = {

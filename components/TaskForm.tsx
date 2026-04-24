@@ -8,12 +8,17 @@ import {
   View,
 } from "react-native";
 import { useNavigation } from "expo-router";
+import { v4 as uuidv4 } from "uuid";
+import type { Recurrence, Step } from "@/lib/types";
 import { Field } from "./Field";
+import { StepsEditor } from "./StepsEditor";
+import { RecurrencePicker } from "./RecurrencePicker";
 
 export type TaskFormValues = {
   title: string;
   outcome: string;
-  stepLabel: string;
+  steps: Step[];
+  recurrence: Recurrence | null;
 };
 
 type Props = {
@@ -25,7 +30,25 @@ type Props = {
   footer?: ReactNode;
 };
 
-const EMPTY: TaskFormValues = { title: "", outcome: "", stepLabel: "" };
+function emptyValues(): TaskFormValues {
+  return {
+    title: "",
+    outcome: "",
+    steps: [{ id: uuidv4(), label: "" }],
+    recurrence: null,
+  };
+}
+
+function isValid(values: TaskFormValues): boolean {
+  if (values.title.trim().length === 0) return false;
+  if (values.outcome.trim().length === 0) return false;
+  if (values.steps.length === 0) return false;
+  if (values.steps.some((s) => s.label.trim().length === 0)) return false;
+  if (values.recurrence?.kind === "weekly" && values.recurrence.weekdays.length === 0) return false;
+  if (values.recurrence?.kind === "monthly" && values.recurrence.daysOfMonth.length === 0)
+    return false;
+  return true;
+}
 
 export function TaskForm({
   title: screenTitle,
@@ -36,13 +59,10 @@ export function TaskForm({
   footer,
 }: Props) {
   const navigation = useNavigation();
-  const [title, setTitle] = useState(initialValues?.title ?? EMPTY.title);
-  const [outcome, setOutcome] = useState(initialValues?.outcome ?? EMPTY.outcome);
-  const [stepLabel, setStepLabel] = useState(initialValues?.stepLabel ?? EMPTY.stepLabel);
+  const [values, setValues] = useState<TaskFormValues>(() => initialValues ?? emptyValues());
   const [submitting, setSubmitting] = useState(false);
 
-  const isValid =
-    title.trim().length > 0 && outcome.trim().length > 0 && stepLabel.trim().length > 0;
+  const valid = isValid(values);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -55,24 +75,25 @@ export function TaskForm({
       headerRight: () => (
         <Pressable
           onPress={async () => {
-            if (!isValid || submitting) return;
+            if (!valid || submitting) return;
             setSubmitting(true);
             try {
               await onSubmit({
-                title: title.trim(),
-                outcome: outcome.trim(),
-                stepLabel: stepLabel.trim(),
+                title: values.title.trim(),
+                outcome: values.outcome.trim(),
+                steps: values.steps.map((s) => ({ ...s, label: s.label.trim() })),
+                recurrence: values.recurrence,
               });
             } catch {
               setSubmitting(false);
             }
           }}
-          disabled={!isValid || submitting}
+          disabled={!valid || submitting}
           hitSlop={12}
         >
           <Text
             className={
-              isValid && !submitting
+              valid && !submitting
                 ? "text-accent text-base font-medium"
                 : "text-muted text-base"
             }
@@ -82,18 +103,7 @@ export function TaskForm({
         </Pressable>
       ),
     });
-  }, [
-    navigation,
-    screenTitle,
-    isValid,
-    submitting,
-    title,
-    outcome,
-    stepLabel,
-    onSubmit,
-    onCancel,
-    submitLabel,
-  ]);
+  }, [navigation, screenTitle, valid, submitting, values, onSubmit, onCancel, submitLabel]);
 
   return (
     <View className="flex-1 bg-bg">
@@ -102,27 +112,29 @@ export function TaskForm({
         className="flex-1"
       >
         <ScrollView
-          contentContainerStyle={{ padding: 24, gap: 20 }}
+          contentContainerStyle={{ padding: 24, gap: 24 }}
           keyboardShouldPersistTaps="handled"
         >
           <Field
             label="Titre"
-            value={title}
-            onChangeText={setTitle}
+            value={values.title}
+            onChangeText={(title) => setValues({ ...values, title })}
             placeholder="Faire la vaisselle"
           />
           <Field
             label="Ce que ça t'apporte"
-            value={outcome}
-            onChangeText={setOutcome}
+            value={values.outcome}
+            onChangeText={(outcome) => setValues({ ...values, outcome })}
             placeholder="Une cuisine prête pour demain matin"
             multiline
           />
-          <Field
-            label="Première étape"
-            value={stepLabel}
-            onChangeText={setStepLabel}
-            placeholder="Ridiculement facile (ex: ouvrir le robinet)"
+          <StepsEditor
+            steps={values.steps}
+            onChange={(steps) => setValues({ ...values, steps })}
+          />
+          <RecurrencePicker
+            recurrence={values.recurrence}
+            onChange={(recurrence) => setValues({ ...values, recurrence })}
           />
           {footer}
         </ScrollView>
