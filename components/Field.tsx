@@ -1,4 +1,5 @@
 import { Text, TextInput, View } from "react-native";
+import { alpha } from "@/lib/theme";
 
 type Props = {
   label: string;
@@ -16,7 +17,7 @@ export function Field({ label, value, onChangeText, placeholder, multiline }: Pr
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        placeholderTextColor="#6B6B6B80"
+        placeholderTextColor={alpha.placeholder}
         multiline={multiline}
         className="bg-soft rounded-2xl px-4 py-4 text-fg text-base"
         style={multiline ? { minHeight: 80, textAlignVertical: "top" } : undefined}
