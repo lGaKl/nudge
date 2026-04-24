@@ -6,6 +6,7 @@ import { db } from "@/db/client";
 import { tasks } from "@/db/schema";
 import { TaskForm, type TaskFormValues } from "@/components/TaskForm";
 import { archiveTask, parseSteps, updateTask } from "@/lib/tasks";
+import { parseRecurrence } from "@/lib/schedule";
 
 export default function EditTaskScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -20,11 +21,11 @@ export default function EditTaskScreen() {
         router.back();
         return;
       }
-      const steps = parseSteps(row.stepsJson);
       setInitialValues({
         title: row.title,
         outcome: row.outcome,
-        stepLabel: steps[0]?.label ?? "",
+        steps: parseSteps(row.stepsJson),
+        recurrence: parseRecurrence(row.recurrenceJson),
       });
     })();
     return () => {

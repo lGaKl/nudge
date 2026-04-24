@@ -8,4 +8,4 @@ export type Step = {
 export type Recurrence =
   | { kind: "daily" }
   | { kind: "weekly"; weekdays: number[] }
-  | { kind: "monthly"; dayOfMonth: number };
+  | { kind: "monthly"; daysOfMonth: number[] };
