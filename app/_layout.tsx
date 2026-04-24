@@ -57,5 +57,29 @@ export default function RootLayout() {
     return <View className="flex-1 bg-bg" />;
   }
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="index" />
+      <Stack.Screen
+        name="task/new"
+        options={{
+          presentation: "modal",
+          headerShown: true,
+          headerTitleStyle: { color: "#1A1A1A" },
+          headerStyle: { backgroundColor: "#FAFAF7" },
+          headerShadowVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="task/[id]"
+        options={{
+          presentation: "modal",
+          headerShown: true,
+          headerTitleStyle: { color: "#1A1A1A" },
+          headerStyle: { backgroundColor: "#FAFAF7" },
+          headerShadowVisible: false,
+        }}
+      />
+    </Stack>
+  );
 }
