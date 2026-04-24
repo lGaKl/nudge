@@ -4,6 +4,10 @@ import { db } from "@/db/client";
 import { tasks } from "@/db/schema";
 import type { Step } from "./types";
 
+export function parseSteps(stepsJson: string): Step[] {
+  return JSON.parse(stepsJson) as Step[];
+}
+
 export type TaskInput = {
   title: string;
   outcome: string;

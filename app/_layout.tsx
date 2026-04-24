@@ -5,6 +5,15 @@ import { Stack } from "expo-router";
 import { Pressable, Text, View } from "react-native";
 import { useDbMigrations } from "@/db/migrate";
 import { seedIfEmpty } from "@/lib/seed";
+import { colors } from "@/lib/theme";
+
+const modalScreenOptions = {
+  presentation: "modal",
+  headerShown: true,
+  headerTitleStyle: { color: colors.fg },
+  headerStyle: { backgroundColor: colors.bg },
+  headerShadowVisible: false,
+} as const;
 
 export default function RootLayout() {
   const { success: migrationsReady, error: migrationError } = useDbMigrations();
@@ -33,9 +42,7 @@ export default function RootLayout() {
   if (error) {
     return (
       <View className="flex-1 items-center justify-center bg-bg px-6">
-        <Text className="text-fg text-lg text-center">
-          Quelque chose a buggé côté données.
-        </Text>
+        <Text className="text-fg text-lg text-center">Quelque chose a buggé côté données.</Text>
         <Text className="text-muted text-base text-center mt-2">
           Pas grave. Essaie à nouveau dans un instant.
         </Text>
@@ -60,26 +67,8 @@ export default function RootLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
-      <Stack.Screen
-        name="task/new"
-        options={{
-          presentation: "modal",
-          headerShown: true,
-          headerTitleStyle: { color: "#1A1A1A" },
-          headerStyle: { backgroundColor: "#FAFAF7" },
-          headerShadowVisible: false,
-        }}
-      />
-      <Stack.Screen
-        name="task/[id]"
-        options={{
-          presentation: "modal",
-          headerShown: true,
-          headerTitleStyle: { color: "#1A1A1A" },
-          headerStyle: { backgroundColor: "#FAFAF7" },
-          headerShadowVisible: false,
-        }}
-      />
+      <Stack.Screen name="task/new" options={modalScreenOptions} />
+      <Stack.Screen name="task/[id]" options={modalScreenOptions} />
     </Stack>
   );
 }
