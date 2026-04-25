@@ -1,21 +1,30 @@
 import "react-native-get-random-values";
 import "../global.css";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Stack } from "expo-router";
-import { Pressable, Text, View } from "react-native";
+import { Text, useColorScheme, View } from "react-native";
 import { useDbMigrations } from "@/db/migrate";
 import { seedIfEmpty } from "@/lib/seed";
-import { colors } from "@/lib/theme";
-
-const modalScreenOptions = {
-  presentation: "modal",
-  headerShown: true,
-  headerTitleStyle: { color: colors.fg },
-  headerStyle: { backgroundColor: colors.bg },
-  headerShadowVisible: false,
-} as const;
+import { colors, colorsDark } from "@/lib/theme";
+import { Button } from "@/components/Button";
 
 export default function RootLayout() {
+  const scheme = useColorScheme();
+  const themeColors = scheme === "dark" ? colorsDark : colors;
+
+  const modalScreenOptions = useMemo(
+    () =>
+      ({
+        presentation: "modal",
+        headerShown: true,
+        headerTitleStyle: { color: themeColors.fg },
+        headerStyle: { backgroundColor: themeColors.bg },
+        headerShadowVisible: false,
+        contentStyle: { backgroundColor: themeColors.bg },
+      }) as const,
+    [themeColors],
+  );
+
   const { success: migrationsReady, error: migrationError } = useDbMigrations();
   const [seeded, setSeeded] = useState(false);
   const [seedError, setSeedError] = useState<Error | null>(null);
@@ -41,31 +50,35 @@ export default function RootLayout() {
 
   if (error) {
     return (
-      <View className="flex-1 items-center justify-center bg-bg px-6">
-        <Text className="text-fg text-lg text-center">Quelque chose a buggé côté données.</Text>
-        <Text className="text-muted text-base text-center mt-2">
+      <View className="flex-1 items-center justify-center bg-bg dark:bg-bg-dark px-6">
+        <Text className="text-fg dark:text-fg-dark text-title text-center">
+          Quelque chose a buggé côté données.
+        </Text>
+        <Text className="text-muted dark:text-muted-dark text-body text-center mt-2">
           Pas grave. Essaie à nouveau dans un instant.
         </Text>
-        <Pressable
-          onPress={() => {
-            setSeedError(null);
-            setSeeded(false);
-            setRetryKey((k) => k + 1);
-          }}
-          className="mt-8 px-6 py-3 bg-accent rounded-2xl"
-        >
-          <Text className="text-white text-base">Réessayer</Text>
-        </Pressable>
+        <View className="mt-8">
+          <Button
+            onPress={() => {
+              setSeedError(null);
+              setSeeded(false);
+              setRetryKey((k) => k + 1);
+            }}
+            haptic="medium"
+          >
+            Réessayer
+          </Button>
+        </View>
       </View>
     );
   }
 
   if (!migrationsReady || !seeded) {
-    return <View className="flex-1 bg-bg" />;
+    return <View className="flex-1 bg-bg dark:bg-bg-dark" />;
   }
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
+    <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: themeColors.bg } }}>
       <Stack.Screen name="index" />
       <Stack.Screen name="task/new" options={modalScreenOptions} />
       <Stack.Screen name="task/[id]" options={modalScreenOptions} />
