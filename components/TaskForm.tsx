@@ -10,6 +10,7 @@ import {
 import { useNavigation } from "expo-router";
 import { v4 as uuidv4 } from "uuid";
 import type { Recurrence, Step } from "@/lib/types";
+import * as haptics from "@/lib/haptics";
 import { Field } from "./Field";
 import { StepsEditor } from "./StepsEditor";
 import { RecurrencePicker } from "./RecurrencePicker";
@@ -69,7 +70,7 @@ export function TaskForm({
       title: screenTitle,
       headerLeft: () => (
         <Pressable onPress={onCancel} hitSlop={12}>
-          <Text className="text-accent text-base">Annuler</Text>
+          <Text className="text-accent dark:text-accent-dark text-body">Annuler</Text>
         </Pressable>
       ),
       headerRight: () => (
@@ -84,6 +85,7 @@ export function TaskForm({
                 steps: values.steps.map((s) => ({ ...s, label: s.label.trim() })),
                 recurrence: values.recurrence,
               });
+              haptics.success();
             } catch {
               setSubmitting(false);
             }
@@ -94,8 +96,8 @@ export function TaskForm({
           <Text
             className={
               valid && !submitting
-                ? "text-accent text-base font-medium"
-                : "text-muted text-base"
+                ? "text-accent dark:text-accent-dark text-body font-medium"
+                : "text-muted dark:text-muted-dark text-body"
             }
           >
             {submitLabel}
@@ -106,7 +108,7 @@ export function TaskForm({
   }, [navigation, screenTitle, valid, submitting, values, onSubmit, onCancel, submitLabel]);
 
   return (
-    <View className="flex-1 bg-bg">
+    <View className="flex-1 bg-bg dark:bg-bg-dark">
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         className="flex-1"

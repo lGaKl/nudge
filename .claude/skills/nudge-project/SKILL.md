@@ -236,6 +236,26 @@ Chaque tâche terminée = **un commit taggé `milestone-TNN`** (ex: `milestone-T
 
 ---
 
+### T11A · Design system & visual foundation
+
+**Outcome** : Le langage visuel de l'app est posé : tokens enrichis (light + dark), typography hiérarchisée, primitives réutilisables, animations subtiles, haptics ciblés. Toutes les features qui suivent (T05+) sont stylées avec ces primitives — pas de refonte plus tard.
+
+> Cette tâche a été insérée le 2026-04-25 par décision de l'utilisateur. Elle correspond à la première moitié de la T11 d'origine (foundation), la deuxième moitié (audit accessibilité) reste à sa place après T10 sous le nom T11.
+
+- T11A.1 · `lib/theme.ts` enrichi : palette light/dark complète, spacing 4-based, radius scale, shadows — **20 min**
+- T11A.2 · Typography scale dans `lib/theme.ts` (display / title / body / caption / micro) en system font — **15 min**
+- T11A.3 · `components/Button.tsx` avec variants `primary | secondary | ghost` + state disabled — **20 min**
+- T11A.4 · `components/Card.tsx` (factorise les cards de la home et toute card future) — **10 min**
+- T11A.5 · `components/Segmented.tsx` (factorise les 3 endroits actuels : recurrence / weekdays-style / home toggle) — **20 min**
+- T11A.6 · `components/EmptyState.tsx` (sort de `app/index.tsx`, devient réutilisable) — **5 min**
+- T11A.7 · Animations primitives dans `lib/animations.ts` avec `react-native-reanimated` (fade, slide doux, respect `prefers-reduced-motion`) — **20 min**
+- T11A.8 · Haptic feedback ciblé via `expo-haptics` sur save / archive / FAB tap — **10 min**
+- T11A.9 · Dark mode auto via `useColorScheme` et `dark:` prefix NativeWind — **20 min**
+- T11A.10 · Migration des 3 écrans existants (`index`, `task/new`, `task/[id]`) vers les nouveaux primitives — **30 min**
+- T11A.11 · `git commit` + `git tag milestone-T11A` — **2 min**
+
+---
+
 ### T05 · Mode focus — cœur du produit
 
 **Outcome** : Tap sur une tâche → écran plein écran avec UNE étape à la fois, bouton "fait" et "passer". **C'est ici que l'app gagne son âme.**
@@ -328,14 +348,16 @@ Chaque tâche terminée = **un commit taggé `milestone-TNN`** (ex: `milestone-T
 
 ---
 
-### T11 · Accessibilité et polish
+### T11 · Audit accessibilité et polish final
 
 **Outcome** : L'app est vraiment utilisable par quelqu'un avec VoiceOver, daltonisme, sensibilité au mouvement. Tu en es fier.
+
+> Cette tâche couvre uniquement l'audit final. Le design system foundation a été déplacé en T11A (entre T04 et T05) le 2026-04-25.
 
 - T11.1 · Audit VoiceOver (iOS) : chaque bouton a un label, les transitions sont annoncées — **45 min**
 - T11.2 · Audit TalkBack (Android) — **30 min**
 - T11.3 · Support Dynamic Type : les tailles de texte suivent le système — **30 min**
-- T11.4 · Respect de `prefers-reduced-motion` : désactiver les animations non essentielles — **20 min**
+- T11.4 · Vérification que `prefers-reduced-motion` est bien respecté partout (déjà câblé en T11A) — **15 min**
 - T11.5 · Vérifier les contrastes (minimum WCAG AA) avec un outil — **20 min**
 - T11.6 · Ajouter une icône d'app et un splash screen — **45 min**
 - T11.7 · Tester sur un petit écran (iPhone SE) et une tablette — **20 min**

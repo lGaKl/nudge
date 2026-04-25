@@ -1,4 +1,6 @@
 import { Pressable, Text, View } from "react-native";
+import { Segmented } from "./Segmented";
+import * as haptics from "@/lib/haptics";
 import type { Recurrence } from "@/lib/types";
 
 type Props = {
@@ -8,11 +10,11 @@ type Props = {
 
 type Kind = "none" | "daily" | "weekly" | "monthly";
 
-const SEGMENTS: { kind: Kind; label: string }[] = [
-  { kind: "none", label: "Aucune" },
-  { kind: "daily", label: "Quotidien" },
-  { kind: "weekly", label: "Hebdo" },
-  { kind: "monthly", label: "Mensuel" },
+const KIND_OPTIONS: { value: Kind; label: string }[] = [
+  { value: "none", label: "Aucune" },
+  { value: "daily", label: "Quotidien" },
+  { value: "weekly", label: "Hebdo" },
+  { value: "monthly", label: "Mensuel" },
 ];
 
 const WEEKDAYS: { label: string; value: number }[] = [
@@ -46,6 +48,7 @@ export function RecurrencePicker({ recurrence, onChange }: Props) {
 
   const toggleWeekday = (day: number) => {
     if (recurrence?.kind !== "weekly") return;
+    haptics.tapLight();
     const has = recurrence.weekdays.includes(day);
     const next = has
       ? recurrence.weekdays.filter((d) => d !== day)
@@ -55,6 +58,7 @@ export function RecurrencePicker({ recurrence, onChange }: Props) {
 
   const toggleDayOfMonth = (day: number) => {
     if (recurrence?.kind !== "monthly") return;
+    haptics.tapLight();
     const has = recurrence.daysOfMonth.includes(day);
     const next = has
       ? recurrence.daysOfMonth.filter((d) => d !== day)
@@ -64,24 +68,9 @@ export function RecurrencePicker({ recurrence, onChange }: Props) {
 
   return (
     <View className="gap-3">
-      <Text className="text-muted text-sm">Récurrence</Text>
+      <Text className="text-muted dark:text-muted-dark text-caption">Récurrence</Text>
 
-      <View className="flex-row gap-2">
-        {SEGMENTS.map((segment) => {
-          const active = segment.kind === activeKind;
-          return (
-            <Pressable
-              key={segment.kind}
-              onPress={() => selectKind(segment.kind)}
-              className={`flex-1 rounded-2xl py-3 items-center ${active ? "bg-accent" : "bg-soft"}`}
-            >
-              <Text className={active ? "text-white text-sm" : "text-fg text-sm"}>
-                {segment.label}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </View>
+      <Segmented options={KIND_OPTIONS} value={activeKind} onChange={selectKind} />
 
       {recurrence?.kind === "weekly" && (
         <View className="flex-row gap-2 justify-between">
@@ -92,11 +81,17 @@ export function RecurrencePicker({ recurrence, onChange }: Props) {
                 key={i}
                 onPress={() => toggleWeekday(day.value)}
                 className={`flex-1 aspect-square rounded-full items-center justify-center ${
-                  active ? "bg-accent" : "bg-soft"
+                  active ? "bg-accent dark:bg-accent-dark" : "bg-soft dark:bg-soft-dark"
                 }`}
                 accessibilityLabel={`Jour ${day.label}`}
               >
-                <Text className={active ? "text-white text-base" : "text-fg text-base"}>
+                <Text
+                  className={
+                    active
+                      ? "text-white text-body"
+                      : "text-fg dark:text-fg-dark text-body"
+                  }
+                >
                   {day.label}
                 </Text>
               </Pressable>
@@ -114,11 +109,19 @@ export function RecurrencePicker({ recurrence, onChange }: Props) {
                 key={d}
                 onPress={() => toggleDayOfMonth(d)}
                 className={`w-10 h-10 rounded-full items-center justify-center ${
-                  active ? "bg-accent" : "bg-soft"
+                  active ? "bg-accent dark:bg-accent-dark" : "bg-soft dark:bg-soft-dark"
                 }`}
                 accessibilityLabel={`Jour ${d} du mois`}
               >
-                <Text className={active ? "text-white text-base" : "text-fg text-base"}>{d}</Text>
+                <Text
+                  className={
+                    active
+                      ? "text-white text-body"
+                      : "text-fg dark:text-fg-dark text-body"
+                  }
+                >
+                  {d}
+                </Text>
               </Pressable>
             );
           })}

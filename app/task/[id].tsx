@@ -7,6 +7,7 @@ import { tasks } from "@/db/schema";
 import { TaskForm, type TaskFormValues } from "@/components/TaskForm";
 import { archiveTask, parseSteps, updateTask } from "@/lib/tasks";
 import { parseRecurrence } from "@/lib/schedule";
+import * as haptics from "@/lib/haptics";
 
 export default function EditTaskScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -34,7 +35,7 @@ export default function EditTaskScreen() {
   }, [id]);
 
   if (!initialValues) {
-    return <View className="flex-1 bg-bg" />;
+    return <View className="flex-1 bg-bg dark:bg-bg-dark" />;
   }
 
   return (
@@ -50,13 +51,14 @@ export default function EditTaskScreen() {
       footer={
         <Pressable
           onPress={async () => {
+            haptics.warning();
             await archiveTask(id);
             router.back();
           }}
           hitSlop={8}
           className="mt-4 items-center py-4"
         >
-          <Text className="text-muted text-base">Archiver</Text>
+          <Text className="text-muted dark:text-muted-dark text-body">Archiver</Text>
         </Pressable>
       }
     />
